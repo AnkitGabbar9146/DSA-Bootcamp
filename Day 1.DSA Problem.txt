@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 5  // Define the maximum size of the stack
+
+// Structure to represent a stack
+struct Stack {
+    int items[MAX];
+    int top;
+};
+
+// Initialize the stack
+void initStack(struct Stack *s) {
+    s->top = -1;
+}
+
+// Check if the stack is full
+int isFull(struct Stack *s) {
+    return (s->top == MAX - 1);
+}
+
+// Check if the stack is empty
+int isEmpty(struct Stack *s) {
+    return (s->top == -1);
+}
+
+// Push an element onto the stack
+void push(struct Stack *s, int value) {
+    if (isFull(s)) {
+        printf("Stack Overflow! Unable to push %d\n", value);
+        return;
+    }
+    s->items[++(s->top)] = value;
+    printf("%d pushed to stack.\n", value);
+}
+
+// Pop an element from the stack
+int pop(struct Stack *s) {
+    if (isEmpty(s)) {
+        printf("Stack Underflow! No elements to pop.\n");
+        return -1;
+    }
+    return s->items[(s->top)--];
+}
+
+// Peek the top element of the stack
+int peek(struct Stack *s) {
+    if (isEmpty(s)) {
+        printf("Stack is empty. No top element.\n");
+        return -1;
+    }
+    return s->items[s->top];
+}
+
+// Display all elements in the stack
+void display(struct Stack *s) {
+    if (isEmpty(s)) {
+        printf("Stack is empty.\n");
+        return;
+    }
+    printf("Stack elements: ");
+    for (int i = 0; i <= s->top; i++) {
+        printf("%d ", s->items[i]);
+    }
+    printf("\n");
+}
+
+// Main function to demonstrate stack operations
+int main() {
+    struct Stack stack;
+    initStack(&stack);
+
+    push(&stack, 10);
+    push(&stack, 20);
+    push(&stack, 30);
+    display(&stack);
+
+    printf("Popped: %d\n", pop(&stack));
+    display(&stack);
+
+    printf("Top element: %d\n", peek(&stack));
+
+    return 0;
+}
