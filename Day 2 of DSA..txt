@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 10  // Maximum number of requests the queue can hold (maximum floors)
+
+// Queue structure to store the lift requests
+struct Queue {
+    int items[MAX];
+    int front, rear;
+};
+
+// Initialize the queue
+void initQueue(struct Queue *q) {
+    q->front = -1;
+    q->rear = -1;
+}
+
+// Check if the queue is full
+int isFull(struct Queue *q) {
+    return (q->rear == MAX - 1);
+}
+
+// Check if the queue is empty
+int isEmpty(struct Queue *q) {
+    return (q->front == -1);
+}
+
+// Add a floor request to the queue
+void enqueue(struct Queue *q, int floor) {
+    if (isFull(q)) {
+        printf("Request Queue is full! Unable to add floor %d\n", floor);
+        return;
+    }
+    if (isEmpty(q)) {
+        q->front = 0;
+    }
+    q->rear++;
+    q->items[q->rear] = floor;
+    printf("Floor %d request added to the queue.\n", floor);
+}
+
+// Remove a floor request from the queue (FIFO)
+int dequeue(struct Queue *q) {
+    if (isEmpty(q)) {
+        printf("No requests to process. Queue is empty.\n");
+        return -1;
+    }
+    int floor = q->items[q->front];
+    q->front++;
+    if (q->front > q->rear) { // Reset queue if all elements are dequeued
+        q->front = q->rear = -1;
+    }
+    return floor;
+}
+
+// Lift movement simulation
+void moveLift(int currentFloor, int targetFloor) {
+    printf("Moving lift from floor %d to floor %d...\n", currentFloor, targetFloor);
+    printf("Lift has arrived at floor %d.\n", targetFloor);
+}
+
+// Main function to simulate the Lift Management System
+int main() {
+    struct Queue requestQueue;
+    initQueue(&requestQueue);
+
+    int currentFloor = 0;  // Lift starts at floor 0
+    int choice, floor;
+
+    while (1) {
+        printf("\n--- Lift Management System ---\n");
+        printf("1. Add Floor Request\n");
+        printf("2. Process Next Request\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter floor number to request (0-%d): ", MAX-1);
+                scanf("%d", &floor);
+                if (floor < 0 || floor >= MAX) {
+                    printf("Invalid floor number! Try again.\n");
+                } else {
+                    enqueue(&requestQueue, floor);
+                }
+                break;
+
+            case 2:
+                floor = dequeue(&requestQueue);
+                if (floor != -1) {
+                    moveLift(currentFloor, floor);
+                    currentFloor = floor;  // Update the current floor
+                }
+                break;
+
+            case 3:
+                printf("Exiting Lift Management System.\n");
+                exit(0);
+
+            default:
+                printf("Invalid choice! Try again.\n");
+        }
+    }
+
+    return 0;
+}
