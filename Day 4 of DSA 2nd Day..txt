@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a queue node
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Structure to represent a queue
+struct Queue {
+    struct Node *front, *rear;
+};
+
+// Function to create a new node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to create a queue
+struct Queue* createQueue() {
+    struct Queue* q = (struct Queue*)malloc(sizeof(struct Queue));
+    q->front = q->rear = NULL;
+    return q;
+}
+
+// Enqueue operation to add an element to the queue
+void enqueue(struct Queue* q, int data) {
+    struct Node* new
