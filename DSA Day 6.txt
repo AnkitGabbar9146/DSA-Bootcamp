@@ -1,0 +1,155 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define a structure for a tree node
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+// Function to create a new node
+struct Node* newNode(int value) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = value;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
+}
+
+// Function to insert a node into the Binary Search Tree (BST)
+struct Node* insert(struct Node* root, int value) {
+    // If the tree is empty, return a new node
+    if (root == NULL)
+        return newNode(value);
+
+    // Otherwise, recur down the tree
+    if (value < root->data)
+        root->left = insert(root->left, value);
+    else if (value > root->data)
+        root->right = insert(root->right, value);
+
+    // Return the (unchanged) node pointer
+    return root;
+}
+
+// Function to find the minimum value node in the tree
+struct Node* findMin(struct Node* node) {
+    struct Node* current = node;
+    // Loop down to find the leftmost leaf
+    while (current && current->left != NULL)
+        current = current->left;
+
+    return current;
+}
+
+// Function to delete a node from the BST
+struct Node* deleteNode(struct Node* root, int key) {
+    // Base case: If the tree is empty
+    if (root == NULL)
+        return root;
+
+    // If the key to be deleted is smaller than the root's key, it lies in the left subtree
+    if (key < root->data)
+        root->left = deleteNode(root->left, key);
+
+    // If the key to be deleted is greater than the root's key, it lies in the right subtree
+    else if (key > root->data)
+        root->right = deleteNode(root->right, key);
+
+    // If key is same as root's key, this is the node to be deleted
+    else {
+        // Node with only one child or no child
+        if (root->left == NULL) {
+            struct Node* temp = root->right;
+            free(root);
+            return temp;
+        } else if (root->right == NULL) {
+            struct Node* temp = root->left;
+            free(root);
+            return temp;
+        }
+
+        // Node with two children: Get the inorder successor (smallest in the right subtree)
+        struct Node* temp = findMin(root->right);
+
+        // Copy the inorder successor's content to this node
+        root->data = temp->data;
+
+        // Delete the inorder successor
+        root->right = deleteNode(root->right, temp->data);
+    }
+
+    return root;
+}
+
+// Inorder traversal: Left, Root, Right
+void inorder(struct Node* root) {
+    if (root != NULL) {
+        inorder(root->left);
+        printf("%d ", root->data);
+        inorder(root->right);
+    }
+}
+
+// Preorder traversal: Root, Left, Right
+void preorder(struct Node* root) {
+    if (root != NULL) {
+        printf("%d ", root->data);
+        preorder(root->left);
+        preorder(root->right);
+    }
+}
+
+// Postorder traversal: Left, Right, Root
+void postorder(struct Node* root) {
+    if (root != NULL) {
+        postorder(root->left);
+        postorder(root->right);
+        printf("%d ", root->data);
+    }
+}
+
+// Main function to test the above functions
+int main() {
+    struct Node* root = NULL;
+    int choice, value;
+
+    while (1) {
+        printf("\n1. Insert\n2. Delete\n3. Display (Inorder, Preorder, Postorder)\n4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+        case 1:
+            printf("Enter value to insert: ");
+            scanf("%d", &value);
+            root = insert(root, value);
+            break;
+
+        case 2:
+            printf("Enter value to delete: ");
+            scanf("%d", &value);
+            root = deleteNode(root, value);
+            break;
+
+        case 3:
+            printf("\nInorder Traversal: ");
+            inorder(root);
+            printf("\nPreorder Traversal: ");
+            preorder(root);
+            printf("\nPostorder Traversal: ");
+            postorder(root);
+            printf("\n");
+            break;
+
+        case 4:
+            exit(0);
+
+        default:
+            printf("Invalid choice!\n");
+        }
+    }
+
+    return 0;
+}
